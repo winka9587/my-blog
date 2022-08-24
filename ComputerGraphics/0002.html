@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>OpenGL使用Laplacian进行网格光顺 | winka9587&#39;s Blog</title>
+    <meta name="generator" content="VuePress 1.9.7">
+    
+    <meta name="description" content="Is anyone there?">
+    
+    <link rel="preload" href="/my-blog/assets/css/0.styles.66c04e2d.css" as="style"><link rel="preload" href="/my-blog/assets/js/app.8719d32f.js" as="script"><link rel="preload" href="/my-blog/assets/js/2.fe61bd6b.js" as="script"><link rel="preload" href="/my-blog/assets/js/5.9e62da6c.js" as="script"><link rel="prefetch" href="/my-blog/assets/js/10.96b7d755.js"><link rel="prefetch" href="/my-blog/assets/js/11.94221570.js"><link rel="prefetch" href="/my-blog/assets/js/12.cda01586.js"><link rel="prefetch" href="/my-blog/assets/js/13.be30332a.js"><link rel="prefetch" href="/my-blog/assets/js/14.3776679c.js"><link rel="prefetch" href="/my-blog/assets/js/15.1be49f13.js"><link rel="prefetch" href="/my-blog/assets/js/16.f19ac87a.js"><link rel="prefetch" href="/my-blog/assets/js/17.def0ab1f.js"><link rel="prefetch" href="/my-blog/assets/js/18.708e7573.js"><link rel="prefetch" href="/my-blog/assets/js/19.66596390.js"><link rel="prefetch" href="/my-blog/assets/js/20.3995b6ee.js"><link rel="prefetch" href="/my-blog/assets/js/21.1c7f65f7.js"><link rel="prefetch" href="/my-blog/assets/js/22.6664bb7c.js"><link rel="prefetch" href="/my-blog/assets/js/23.43617db7.js"><link rel="prefetch" href="/my-blog/assets/js/24.67d6fbed.js"><link rel="prefetch" href="/my-blog/assets/js/25.41d7c9b1.js"><link rel="prefetch" href="/my-blog/assets/js/26.f2a09d11.js"><link rel="prefetch" href="/my-blog/assets/js/27.0a80dbf8.js"><link rel="prefetch" href="/my-blog/assets/js/28.793261c3.js"><link rel="prefetch" href="/my-blog/assets/js/29.d7e6e503.js"><link rel="prefetch" href="/my-blog/assets/js/3.82c0e95c.js"><link rel="prefetch" href="/my-blog/assets/js/30.54d620af.js"><link rel="prefetch" href="/my-blog/assets/js/31.890c2d76.js"><link rel="prefetch" href="/my-blog/assets/js/32.78089df6.js"><link rel="prefetch" href="/my-blog/assets/js/33.df07fc4f.js"><link rel="prefetch" href="/my-blog/assets/js/34.faedcc52.js"><link rel="prefetch" href="/my-blog/assets/js/35.a6a32fa5.js"><link rel="prefetch" href="/my-blog/assets/js/36.b7734f20.js"><link rel="prefetch" href="/my-blog/assets/js/37.d2986868.js"><link rel="prefetch" href="/my-blog/assets/js/38.8df975a8.js"><link rel="prefetch" href="/my-blog/assets/js/39.c07b108e.js"><link rel="prefetch" href="/my-blog/assets/js/4.96218e05.js"><link rel="prefetch" href="/my-blog/assets/js/40.09555f17.js"><link rel="prefetch" href="/my-blog/assets/js/41.3d998535.js"><link rel="prefetch" href="/my-blog/assets/js/42.0e3c99bf.js"><link rel="prefetch" href="/my-blog/assets/js/43.315f3388.js"><link rel="prefetch" href="/my-blog/assets/js/6.3d281fcb.js"><link rel="prefetch" href="/my-blog/assets/js/7.cc12d867.js"><link rel="prefetch" href="/my-blog/assets/js/8.f68e3932.js"><link rel="prefetch" href="/my-blog/assets/js/9.4fb889cc.js">
+    <link rel="stylesheet" href="/my-blog/assets/css/0.styles.66c04e2d.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/my-blog/" class="home-link router-link-active"><!----> <span class="site-name">winka9587's Blog</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="winka的Blog" class="dropdown-title"><span class="title">winka的Blog</span> <span class="arrow down"></span></button> <button type="button" aria-label="winka的Blog" class="mobile-dropdown-title"><span class="title">winka的Blog</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://github.com/winka9587" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/Vikanill" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="winka的Blog" class="dropdown-title"><span class="title">winka的Blog</span> <span class="arrow down"></span></button> <button type="button" aria-label="winka的Blog" class="mobile-dropdown-title"><span class="title">winka的Blog</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="https://github.com/winka9587" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li><li class="dropdown-item"><!----> <a href="https://blog.csdn.net/Vikanill" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  CSDN
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></li></ul></div></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><a href="/my-blog/" class="sidebar-heading clickable router-link-active"><span>主页</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/my-blog/" aria-current="page" class="sidebar-link">README</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/my-blog/Category-level/0001.html" class="sidebar-heading clickable"><span>类级别</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/my-blog/Category-level/0001.html" class="sidebar-link">NOCS</a></li><li><a href="/my-blog/Category-level/0002.html" class="sidebar-link">SPD</a></li><li><a href="/my-blog/Category-level/0003.html" class="sidebar-link">关于normal</a></li><li><a href="/my-blog/Category-level/0004.html" class="sidebar-link">关于curvature</a></li><li><a href="/my-blog/Category-level/0005.html" class="sidebar-link">CAPTRA部分代码解读</a></li><li><a href="/my-blog/Category-level/0006.html" class="sidebar-link">about数据集</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/my-blog/ComputerGraphics/" class="sidebar-heading clickable router-link-active open"><span>再见了,所有的图形学作业</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/my-blog/ComputerGraphics/0002.html" aria-current="page" class="active sidebar-link">OpenGL使用Laplacian进行网格光顺</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/my-blog/ComputerGraphics/0002.html#obj文件的数据结构" class="sidebar-link">obj文件的数据结构</a></li><li class="sidebar-sub-header"><a href="/my-blog/ComputerGraphics/0002.html#绘制模型" class="sidebar-link">绘制模型</a></li><li class="sidebar-sub-header"><a href="/my-blog/ComputerGraphics/0002.html#laplacian光顺" class="sidebar-link">Laplacian光顺</a></li><li class="sidebar-sub-header"><a href="/my-blog/ComputerGraphics/0002.html#demo" class="sidebar-link">Demo</a></li></ul></li><li><a href="/my-blog/ComputerGraphics/0003.html" class="sidebar-link">从Mat_中提取数据失败:Mat_与Mat的区别</a></li><li><a href="/my-blog/ComputerGraphics/0001.html" class="sidebar-link">[WebGL]点击改变面的贴图</a></li><li><a href="/my-blog/ComputerGraphics/0005.html" class="sidebar-link">OpenCV Error: Mat踩坑踩到死</a></li><li><a href="/my-blog/ComputerGraphics/0006.html" class="sidebar-link">Loop Subdivision与Modified Butterfly Subdivision</a></li><li><a href="/my-blog/ComputerGraphics/0007.html" class="sidebar-link">OpenGL通过glRasterPos设置当前光栅坐标实现分屏效果</a></li><li><a href="/my-blog/ComputerGraphics/0004.html" class="sidebar-link">[踩坑记录]ARCore for Unity2019</a></li><li><a href="/my-blog/ComputerGraphics/0008.html" class="sidebar-link">[踩坑记录]VS2017+大恒MER-131-210U3C相机</a></li><li><a href="/my-blog/ComputerGraphics/0009.html" class="sidebar-link">[unity]C#脚本调用外部exe</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/my-blog/Web/" class="sidebar-heading clickable"><span>Web</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/my-blog/Web/0001.html" class="sidebar-link">解决'express' 不是内部或外部命令，也不是可运行的程序 或批处理文件</a></li><li><a href="/my-blog/Web/0002.html" class="sidebar-link">关于更新node.js以及npm</a></li><li><a href="/my-blog/Web/0003.html" class="sidebar-link">配置turn服务器实现nat穿透</a></li><li><a href="/my-blog/Web/0004.html" class="sidebar-link">web上的mediarecorder更换stream(录制过程中切换摄像头)</a></li><li><a href="/my-blog/Web/0005.html" class="sidebar-link">通过mediarecorder+mediasource实现h5直播,以及关于webrtc直播的问题</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/my-blog/MachineLearning/" class="sidebar-heading clickable"><span>机器不学习</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/my-blog/MachineLearning/0001.html" class="sidebar-link">基于SVM的划线框识别(1)HOG特征提取</a></li><li><a href="/my-blog/MachineLearning/0002.html" class="sidebar-link">基于SVM的划线框识别(2)ROC曲线(二分类)</a></li></ul></section></li><li><section class="sidebar-group depth-0"><a href="/my-blog/ROS/" class="sidebar-heading clickable"><span>ROS</span> <!----></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/my-blog/ROS/0001.html" class="sidebar-link">ROS Day1</a></li><li><a href="/my-blog/ROS/0002.html" class="sidebar-link">ROS Day2</a></li><li><a href="/my-blog/ROS/0003.html" class="sidebar-link">ROS Day3</a></li><li><a href="/my-blog/ROS/0004.html" class="sidebar-link">ROS Day4</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><a href="/my-blog/GoLearning/" class="sidebar-heading clickable"><span>天天想学习</span> <span class="arrow right"></span></a> <!----></section></li><li><a href="/my-blog/NoLearning/" class="sidebar-link">天天不想学习</a></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="opengl使用laplacian进行网格光顺"><a href="#opengl使用laplacian进行网格光顺" class="header-anchor">#</a> OpenGL使用Laplacian进行网格光顺</h1> <p>题目要求使用OpenGL+Laplacian算子对obj文件进行网格光顺，这篇算是作业的记录吧</p> <p>什么是网格光顺？网格光顺在不改变顶点之间连接关系、减小曲率变化的前提下移动顶点，达到减小噪声、改善网格三角形形状的效果。该善三角形形状-&gt;趋向于正三角形，你可以观察下面的三角形网格变化。</p> <p>先用gif图演示一下网格光顺的效果，直观感受一下</p> <p><img src="/my-blog/assets/img/20190529170027837.3d7543cf.gif" alt="20190529170027837"><img src="/my-blog/assets/img/20190529165803826.0176305d.gif" alt="20190529165803826"></p> <p>上一次接触Laplacian<a href="https://so.csdn.net/so/search?q=%E7%AE%97%E5%AD%90&amp;spm=1001.2101.3001.7020" target="_blank" rel="noopener noreferrer">算子<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>还是在数字图像处理的课程上，使用Laplacian算子处理图像来获得边缘增强的图像，再与原来的图像进行结合，实现图像的锐化。</p> <p><img src="/my-blog/assets/img/20190528130456475.8559e7b8.jpg" alt="20190528130456475"></p> <h2 id="obj文件的数据结构"><a href="#obj文件的数据结构" class="header-anchor">#</a> obj文件的数据结构</h2> <p>开始先使用MeshLab看看我们要处理的obj文件</p> <p><img src="/my-blog/assets/img/image-20220314202746181.f2606fe8.png" alt="image-20220314202746181"></p> <p>经典小兔，搞图形学的都不陌生。用记事本打开obj文件可以看到这个obj文件里面只有</p> <p>v：几何体顶点（Geometry Vertice）</p> <p>vn：顶点法线（Vertex Normal）</p> <p>f：面（Face）</p> <p>三种数据</p> <p>截取部分：</p> <p><img src="/my-blog/assets/img/image-20220314202825524.c586f550.png" alt="image-20220314202825524"></p> <p>其中v和vn后面跟的都是xyz</p> <p>usemtl(null)表示没有贴图</p> <p>面f的数据格式是</p> <p>f 顶点索引//顶点法向索引  顶点索引//顶点法向索引  顶点索引//顶点法向索引</p> <p>比如 “f 1//4 2//5 3//6” 就是这个面由第1、2、3个点构成，这三个顶点又分别对应第4、5、6个顶点法向</p> <p>（如果有贴图的话就是  顶点索引/纹理索引/顶点法向索引）</p> <p>注意，obj文件的索引都是从1开始的而不是0</p> <p>读取obj文件
+代码参考了这位博主的代码：非常简单，教你用OpenGL读入obj模型_旧时光 | YoungChen's 博客-CSDN博客</p> <p>在其基础上进行了改进：</p> <p>1、原po的顶点法向是计算出来的，而我们的obj文件中已经有顶点法向的数据，添加了读取顶点法向的操作</p> <p>2、同时存储顶点xyz坐标的vset中还记录了包含该顶点的face，将face索引存入顶点的vector中是为了便于之后Laplacian的相关计算，我不知道obj文件的顶点之间是否有什么特殊的排列或者什么办法能够快速地找到周围的点。</p> <div class="language- extra-class"><pre class="language-text"><code>objLoader::objLoader(string filename)
+{
+	drawmode = GL_LINE;//默认是绘制轮廓
+	string line;//读取每一行
+	fstream f;
+	f.open(filename, ios::in);//读文件
+	if (!f.is_open()) {
+		cout &lt;&lt; &quot;file cannot open&quot; &lt;&lt; endl;
+	}
+	else {
+		cout &lt;&lt; &quot;file open successful&quot; &lt;&lt; endl;
+	}
+
+	while (!f.eof()) {
+		getline(f, line);
+		char breakmarker = ' ';//obj中每行各部分以空格隔开
+		string little_tail = &quot; &quot;;
+		line = line.append(little_tail);//为line末尾添加一个分隔符
+		//将当前行根据空格分开
+		string part = &quot;&quot;;
+		vector&lt;string&gt; partofline;//当前行根据空格拆分成的各个string部分
+		for (int i = 0; i &lt; line.length(); i++) {
+			char nowchar = line[i];
+			if (nowchar == breakmarker) {
+				//如果当前char为空格，将前面的部分存入partofline
+				partofline.push_back(part);
+				part = &quot;&quot;;
+			}
+			else {
+				part += nowchar;
+			}
+		}
+		//当前行拆分完毕
+		//根据不同的数据进行相应操作
+		if (partofline.size() == 4) {
+			//我们的网格是三角形网格，如果不是拆分成4部分那就没必要检查
+			if (partofline[0] == &quot;v&quot;) {
+				//当前行是顶点，存储顶点坐标
+				vector&lt;GLdouble&gt; v;
+				for (int n = 1; n &lt; 4; n++) {
+					//GLdouble xyz = atof(partofline[n].c_str());//转换成double
+					GLdouble xyz = atof(partofline[n].c_str());//转换成double
+					v.push_back(xyz);
+				}
+				vset.push_back(v);
+			}
+			if (partofline[0] == &quot;vn&quot;) {
+				//当前行是顶点向量，存储向量
+				vector&lt;GLdouble&gt; vn;
+				for (int n = 1; n &lt; 4; n++) {
+					//GLdouble xyz = atof(partofline[n].c_str());//转换成double
+					GLdouble xyz = atof(partofline[n].c_str());//转换成double
+					vn.push_back(xyz);
+				}
+				vnset.push_back(vn);
+			}
+			
+			if (partofline[0] == &quot;f&quot;) {
+				//当前行是面，将顶点索引和对应的顶点法向索引存储起来
+				//因为在执行到面的时候所有顶点已经存储完成，将顶点对应的面存储到顶点中
+				vector&lt;GLint&gt; f;
+				//因为数据格式是  顶点索引//顶点法向索引
+				//要将中间两道斜线去掉
+				for (int n = 1; n &lt; 4; n++) {//处理三个v//vn
+					vector&lt;string&gt; vvn;//存放处理好的v和vn
+					string v_and_vn = partofline[n];// v//vn
+					v_and_vn = v_and_vn.append(&quot;/&quot;);
+					string part = &quot;&quot;;
+					for (int c = 0; c &lt; v_and_vn.length(); c++) {//将v//vn拆开
+						char nowcharofpart = v_and_vn[c];
+						//因为2个/，vvn[0]存储v,vvn[1]存储&quot;&quot;，vvn[2]存储vn
+						if (nowcharofpart == '/') {
+							vvn.push_back(part);
+							part = &quot;&quot;;
+						}
+						else {
+							part += nowcharofpart;
+						}
+					}
+					//v和vn已经拆分好并存入了vvn，现在存入对应的set
+					GLint vindex = atof(vvn[0].c_str());
+					GLint vnindex = atof(vvn[2].c_str());
+					//f的结构为 { v0 , vn0 , v1 , vn1 , v2 , vn2 }
+					f.push_back(vindex);
+					f.push_back(vnindex);
+					//cout &lt;&lt; &quot;v:&quot; &lt;&lt; vindex &lt;&lt; endl;
+					//cout &lt;&lt; &quot;vn:&quot; &lt;&lt; vnindex &lt;&lt; endl;
+					//既然已经知道了顶点索引，将面索引存入到对应的顶点中去
+					//obj文件的索引是从1开始的而不是0
+					//这时候f还没有添加到fset中去，f的序号(从0开始)应该为fset.size()
+					vset[vindex - 1].push_back(fset.size());
+					//cout &lt;&lt; &quot;face number:&quot; &lt;&lt; fset.size()&lt;&lt;endl;
+				}
+
+				fset.push_back(f);//将顶点索引和顶点向量索引存入fset
+			}
+		}
+		/*
+		//输出当前行的初步拆分结果
+		cout&lt;&lt;&quot;line：&quot; &lt;&lt; line &lt;&lt; endl;
+		cout &lt;&lt; &quot;part number：&quot; &lt;&lt; partofline.size()&lt;&lt;endl;
+		for (int j = 0; j &lt; partofline.size(); j++) {
+			cout &lt;&lt; partofline[j] &lt;&lt; endl;
+		}
+		*/
+	}
+
+	vset_begin.assign(vset.begin(), vset.end());//将vset备份
+	f.close();
+	/*
+	//输出最终结果
+	cout &lt;&lt; &quot;输出vset&quot; &lt;&lt; endl;
+	for (int m = 0; m &lt; vset.size(); m++) {
+		for (int n = 0; n &lt; vset[m].size(); n++) {
+			cout &lt;&lt; vset[m][n] &lt;&lt; &quot;，&quot;;
+		}
+		cout &lt;&lt; endl;
+	}
+	cout &lt;&lt; &quot;输出vnset&quot; &lt;&lt; endl;
+	for (int m = 0; m &lt; vnset.size(); m++) {
+		for (int n = 0; n &lt; vnset[m].size(); n++) {
+			cout &lt;&lt; vnset[m][n] &lt;&lt; &quot;，&quot;;
+		}
+		cout &lt;&lt; endl;
+	}
+	cout &lt;&lt; &quot;输出fset&quot; &lt;&lt; endl;
+	for (int m = 0; m &lt; fset.size(); m++) {
+		for (int n = 0; n &lt; fset[m].size(); n++) {
+			cout &lt;&lt; fset[m][n] &lt;&lt; &quot;，&quot;;
+		}
+		cout &lt;&lt; endl;
+	}
+	*/
+}
+</code></pre></div><h2 id="绘制模型"><a href="#绘制模型" class="header-anchor">#</a> 绘制模型</h2> <p>glNormal和glVertex将读取到的顶点法向与对应的顶点绑定</p> <div class="language- extra-class"><pre class="language-text"><code>void objLoader::drawobj() {
+	int vindex1, vindex2, vindex3,
+		vnindex1,vnindex2,vnindex3;
+		glPolygonMode(GL_FRONT_AND_BACK, drawmode);
+		for (int i = 0; i &lt; fset.size(); i++) {
+			//索引从1开始，set从0开始
+			//顶点索引
+			vindex1 = fset[i][0] - 1;
+			vindex2 = fset[i][2] - 1;
+			vindex3 = fset[i][4] - 1;
+			//顶点法向索引
+			vnindex1 = fset[i][1] - 1;
+			vnindex2 = fset[i][3] - 1;
+			vnindex3 = fset[i][5] - 1;
+			glBegin(GL_TRIANGLES);
+			if (reverseVertexNormal) {
+				glNormal3d(-vnset[vnindex1][0], -vnset[vnindex1][1], -vnset[vnindex1][2]);//设置顶点法向
+				glVertex3d(vset[vindex1][0], vset[vindex1][1], vset[vindex1][2]);
+				glNormal3d(-vnset[vnindex2][0], -vnset[vnindex2][1], -vnset[vnindex2][2]);
+				glVertex3d(vset[vindex2][0], vset[vindex2][1], vset[vindex2][2]);
+				glNormal3d(-vnset[vnindex3][0], -vnset[vnindex3][1], -vnset[vnindex3][2]);
+				glVertex3d(vset[vindex3][0], vset[vindex3][1], vset[vindex3][2]);
+			}
+			else {
+				glNormal3d(vnset[vnindex1][0], vnset[vnindex1][1], vnset[vnindex1][2]);//设置顶点法向
+				glVertex3d(vset[vindex1][0], vset[vindex1][1], vset[vindex1][2]);
+				glNormal3d(vnset[vnindex2][0], vnset[vnindex2][1], vnset[vnindex2][2]);
+				glVertex3d(vset[vindex2][0], vset[vindex2][1], vset[vindex2][2]);
+				glNormal3d(vnset[vnindex3][0], vnset[vnindex3][1], vnset[vnindex3][2]);
+				glVertex3d(vset[vindex3][0], vset[vindex3][1], vset[vindex3][2]);
+			}
+			glEnd();
+		}
+	
+}
+</code></pre></div><p><img src="data:image/gif;base64,R0lGODlhAQABAPABAP///wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==" alt="点击并拖拽以移动">glPolygonMode()的第二个参数通过在GL_LINE和GL_FILL切换可以达到不同的绘制效果，左为GL_LINE，右为GL_FILL</p> <p><img src="/my-blog/assets/img/image-20220314203039336.fb2ad177.png" alt="image-20220314203039336"><img src="/my-blog/assets/img/image-20220314203053474.76184cbc.png" alt="image-20220314203053474"></p> <p>题外话：这里面的reverseVertexNormal是我自己加的一个布尔量，因为这里的顶点法向是从文件中读取的，如果是自己计算顶点法向有可能得到的结果与实际结果相反。于是我就想试试如果把顶点法向反过来会是什么样子，试验结果也贴一下：</p> <p>为了使看到的模型有亮有暗我调整了一下光源的位置，且环境光几乎为0，demo中应该看不到这样明显的效果，可能需要手动调整一下光源位置并关闭环境光</p> <p><img src="/my-blog/assets/img/image-20220314203118145.58103c17.png" alt="image-20220314203118145"></p> <p><img src="/my-blog/assets/img/image-20220314203108318.a8923801.png" alt="image-20220314203108318"></p> <p>左为原顶点法向的模型，右为将顶点法向变为相反方向之后的模型，可以看到原来亮的部分变暗了，暗的部分变亮了。</p> <h2 id="laplacian光顺"><a href="#laplacian光顺" class="header-anchor">#</a> Laplacian光顺</h2> <p>我们在进行网格光顺时并没有考虑权重对新坐标的影响，如果引入权重光顺的效果会更好一些。这里只是浅显地实验一下</p> <p><img src="/my-blog/assets/img/image-20220314203137213.7cf8d3ba.png" alt="image-20220314203137213"></p> <p>光顺过程中不能直接用新的顶点去替换别的顶点，因为可能还有别的顶点要使用这个顶点来计算。</p> <p>容易出错的一处地方是不要忘记将旧顶点的face序号存入新顶点中，否则只能进行一次Laplacian光顺，第二次光顺时就会因为找不到face序号而无法计算。</p> <div class="language- extra-class"><pre class="language-text"><code>//计算拉普拉斯算子进行网格光顺后的点
+void objLoader::LaplacianCal() {
+	for (int i = 0; i &lt; vset.size(); i++) {
+		//找到顶点周围的所有点的序号
+		vector&lt;GLint&gt; v_near;//存放周围点的序号
+		
+		for (int j = 3; j &lt; vset[i].size(); j++) {
+			//遍历包含该顶点的所有face
+			//因为vset存储的是double，得到序号需要转换成int
+			//vset[012]存放顶点，之后存放的是face的索引(从0开始）
+			int faceindex = (int)vset[i][j];
+			for (int k = 0; k &lt; 5; k = k+2) {//遍历face的三个顶点索引，注意fset  { v0 , vn0 , v1 , vn1 , v2 , vn2 }
+				//检查是否与当前顶点是一个顶点，face中存储的序号从1开始
+				if (fset[faceindex][k]-1!=i ) {
+					//不是的话加入v_near
+					v_near.push_back(fset[faceindex][k]-1);
+				}
+			}
+		}
+		
+		//计算拉普拉斯分量乘以参数
+		double xsum = 0, 
+				ysum = 0,
+				zsum = 0;
+		for (int m = 0; m &lt; v_near.size(); m++) {
+			int vindex = v_near[m];
+			xsum += vset[vindex][0];
+			ysum += vset[vindex][1];
+			zsum += vset[vindex][2];
+		}
+		int numofv = v_near.size();
+		double newx = xsum / numofv*para_ofLaplacian + (1-para_ofLaplacian)*vset[i][0],
+			newy = ysum / numofv * para_ofLaplacian + (1 - para_ofLaplacian)*vset[i][1],
+			newz = zsum / numofv * para_ofLaplacian + (1 - para_ofLaplacian)*vset[i][2];
+		vector&lt;GLdouble&gt; newv;
+		newv.push_back(newx);
+		newv.push_back(newy);
+		newv.push_back(newz);
+		for (int n = 3; n &lt; vset[i].size(); n++) newv.push_back(vset[i][n]);//不要忘记将face序号也存储进去，准备下一次拉普拉斯算子的计算
+		//存储新顶点
+		vset_afterLaplacian.push_back(newv);
+		
+	}
+	vset.clear();
+	vset.assign(vset_afterLaplacian.begin(), vset_afterLaplacian.end());
+	vset_afterLaplacian.clear();
+}
+</code></pre></div><p>看一下Laplacian算子进行光顺之后的效果（左为原模型，右为Laplacian系数设置为0.5，光顺3次之后的结果）</p> <p><img src="/my-blog/assets/img/image-20220314203211953.b41ab4fb.png" alt="image-20220314203211953"></p> <p><img src="/my-blog/assets/img/image-20220314203222898.381db029.png" alt="image-20220314203222898"></p> <h2 id="demo"><a href="#demo" class="header-anchor">#</a> Demo</h2> <p>Demo还实现了使用鼠标左键拖拽，右键旋转、滚轮缩放的功能，支持绘制模式在GL_LINE和GL_FILL之间切换，反转顶点法向。交互做的比较糙，虽然拖拽只能在XOZ平面上拖拽，旋转只能绕Z轴和Y轴旋转，但结合起来基本上模型哪个部分都能看到（可能旋转之后有些别扭就是了），关于使用main文件里面有说明</p> <p><a href="https://download.csdn.net/download/vikanill/11215197" target="_blank" rel="noopener noreferrer">openGL使用Laplacian算子进行网格光顺<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></p></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/my-blog/Category-level/0006.html" class="prev">
+        about数据集
+      </a></span> <span class="next"><a href="/my-blog/ComputerGraphics/0003.html">
+        从Mat_中提取数据失败:Mat_与Mat的区别
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/my-blog/assets/js/app.8719d32f.js" defer></script><script src="/my-blog/assets/js/2.fe61bd6b.js" defer></script><script src="/my-blog/assets/js/5.9e62da6c.js" defer></script>
+  </body>
+</html>
